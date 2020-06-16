@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:tomatoclock/been/MainRouteBeen.dart';
@@ -22,9 +23,11 @@ import 'package:tomatoclock/lesson/Lesson7.dart';
 import 'package:tomatoclock/lesson/Lesson8.dart';
 import 'package:tomatoclock/lesson/Lesson9.dart';
 
+import 'higlesson/Lesson21.dart';
 import 'lesson/Lesson16_2.dart';
+import 'higlesson/Lesson20.dart';
 
-void main() {
+main() {
   FlutterError.onError = (FlutterErrorDetails details) {
     reportErrorAndLog(details);
   };
@@ -57,6 +60,7 @@ FlutterErrorDetails makeDetails(Object obj, StackTrace stack) {
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -84,6 +88,8 @@ class MyApp extends StatelessWidget {
         "new_page_18": (context) => AsyncRoute(),
         "new_page_19": (context) => DialogRoute(),
         "new_page_20": (context) => GestureDetectorTestRoute(),
+        "new_page_21": (context) => CameraExampleHome(),
+        "new_page_22": (context) => VideoPlayerApp(),
 
         "tip2": (context) {
           return TipRoute(text: ModalRoute.of(context).settings.arguments);
@@ -95,7 +101,7 @@ class MyApp extends StatelessWidget {
 //        onGenerateRoute: (RouteSettings settings) {
 //          return MaterialPageRoute(builder: (context) {
 //            String routeName = settings.name;
-//            if (routeName == "new_page_0") {
+//            if (routeName == "new_page_21") {
 //              // 如果访问的路由页需要登录，但当前未登录，则直接返回登录页路由，
 //              // 引导用户登录；其它情况则正常打开路由。
 //              return Demo0Route();
@@ -204,7 +210,11 @@ class _MyHomePageState extends State<MyHomePage> {
 //                Navigator.push(context, MaterialPageRoute(builder: (context) {
 //                  return RouterTestRoute();
 //                }));
-                    Navigator.pushNamed(context, _list[index].routeName);
+                    if (_list[index].routeName == "new_page_21") {
+                      pushToCamera(context);
+                    } else {
+                      Navigator.pushNamed(context, _list[index].routeName);
+                    }
                   }
                 },
               ));
@@ -242,6 +252,16 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
+  void pushToCamera(BuildContext context) async {
+    final List<CameraDescription> cameras = await availableCameras();
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => CameraExampleHome(camera: cameras),
+      ),
+    );
+  }
+
   void _retrieveData() {
     setState(() {
       //重新构建列表
@@ -265,18 +285,19 @@ class _MyHomePageState extends State<MyHomePage> {
           new MainRouteBeen(name: 'go to 滚动事件2', routeName: 'new_page_13'));
       _list
           .add(new MainRouteBeen(name: 'go to 数据共享', routeName: 'new_page_14'));
-      _list
-          .add(new MainRouteBeen(name: 'go to 跨组件状态共享', routeName: 'new_page_15'));
-      _list
-          .add(new MainRouteBeen(name: 'go to 主题色', routeName: 'new_page_16'));
+      _list.add(
+          new MainRouteBeen(name: 'go to 跨组件状态共享', routeName: 'new_page_15'));
+      _list.add(new MainRouteBeen(name: 'go to 主题色', routeName: 'new_page_16'));
       _list
           .add(new MainRouteBeen(name: 'go to 主题练习', routeName: 'new_page_17'));
-      _list
-          .add(new MainRouteBeen(name: 'go to 异步更新UI', routeName: 'new_page_18'));
-      _list
-          .add(new MainRouteBeen(name: 'go to 对话框详解', routeName: 'new_page_19'));
+      _list.add(
+          new MainRouteBeen(name: 'go to 异步更新UI', routeName: 'new_page_18'));
+      _list.add(
+          new MainRouteBeen(name: 'go to 对话框详解', routeName: 'new_page_19'));
       _list
           .add(new MainRouteBeen(name: 'go to 手势识别', routeName: 'new_page_20'));
+      _list.add(new MainRouteBeen(name: 'go to 拍照', routeName: 'new_page_21'));
+      _list.add(new MainRouteBeen(name: 'go to 播放器', routeName: 'new_page_22'));
     });
   }
 }
